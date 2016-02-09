@@ -30,7 +30,14 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rails'
+
 
   # Runtime dependencies
-  spec.add_runtime_dependency 'acts_as_commentable_with_threading', '~> 2.0.1'
+  spec.add_runtime_dependency 'activerecord', '>= 4.0'
+  spec.add_runtime_dependency 'activesupport', '>= 4.0'
+  spec.add_runtime_dependency 'awesome_nested_set', '>= 3.0'
+
+  # Test dependencies
 end
