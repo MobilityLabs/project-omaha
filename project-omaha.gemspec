@@ -10,7 +10,6 @@ Gem::Specification.new do |spec|
   spec.email         = ['sean@mobility-labs.com']
 
   spec.summary       = 'This is a short summary.'
-  spec.homepage      = 'http//www.mobility-labs.com'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
@@ -30,7 +29,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rails'
 
 
