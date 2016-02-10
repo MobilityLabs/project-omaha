@@ -9,7 +9,7 @@ class ActsAsCommentableWithThreadingMigration < ActiveRecord::Migration
       t.string :commentator_type, null: false
       t.integer :commentator_id, null: false
       t.integer :parent_id, :lft, :rgt
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :comments, :commentator_id

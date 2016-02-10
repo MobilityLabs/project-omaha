@@ -3,44 +3,33 @@ class Comment < ActiveRecord::Base
 
   validates :body, presence: true
   validates :commentator, presence: true
-
-  # NOTE: install the acts_as_votable plugin if you
-  # want user to vote on the quality of comments.
-  # acts_as_votable
-
   belongs_to :commentable, polymorphic: true
-
-  # Comments belong to any user type available
   belongs_to :commentator, polymorphic: true
 
-  # Helper class method that allows you to build a comment
-  # by passing a commentable object, a user_id, and comment text
-  # example in readme
+  # Scope to find all comments assigned to all commentable types for a given user.
+  scope :find_comments_by_commentator, lambda { |commentator|
+    where(commentator_id: commentator.id).order(created_at: :desc)
+  }
 
-  def self.build_from(obj, commentator_id, comment)
+  # Scope to find all comments for commentable class name and commentable id.
+  scope :find_comments_for_commentable, lambda { |type, id|
+    where(commentable_type: type.to_s, commentable_id: id)
+        .order(created_at: :desc)
+  }
+
+  # Helper class method that allows you to build a comment
+  # by passing a commentable object, a commentator, and comment text
+
+  def self.build_from(commentable, commentator, comment)
     new \
-      commentable: obj,
+      commentable: commentable,
       body: comment,
-      commentator_id: commentator_id
+      commentator: commentator
   end
 
-  # helper method to check if a comment has children
   def has_children?
     children.any?
   end
-
-  # Helper class method to lookup all comments assigned
-  # to all commentable types for a given user.
-  scope :find_comments_by_commentator, lambda { |commentator|
-    where(commentator_id: commentator.id).order('created_at DESC')
-  }
-
-  # Helper class method to look up all comments for
-  # commentable class name and commentable id.
-  scope :find_comments_for_commentable, lambda { |type, id|
-    where(commentable_type: type.to_s, commentable_id: id)
-        .order('created_at DESC')
-  }
 
   # Helper class method to look up a commentable object
   # given the commentable class name and id
