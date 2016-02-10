@@ -41,7 +41,7 @@ describe Comment do
     end
   end
 
-  describe 'after having a child added' do
+  context 'after having a child added' do
     let(:child) {
       Comment.create!(body: 'Child comment', commentator: user)
     }
@@ -117,6 +117,30 @@ describe Comment do
       it 'should not return the comments for non-passed commentables' do
         expect(comments).not_to include(other_comment)
       end
+    end
+  end
+
+  context 'when specifying a depth of 1 for comments' do
+
+    let(:user) {
+      User.create!
+    }
+
+    let(:commentable) {
+      Commentable.create!
+    }
+
+    let(:comment) {
+      Comment.create!(body: 'Foo', commentable: commentable, commentator: user, children_count: 1)
+    }
+
+    before(:each) do
+      Comment.create!(body: 'Bar', commentable: commentable, commentator: user, parent: comment)
+      Comment.create!(body: 'Baz', commentable: commentable, commentator: user, parent: comment)
+    end
+
+    it 'does not allow more than one child comment' do
+      expect(comment.children.size).to eq 1
     end
   end
 end
