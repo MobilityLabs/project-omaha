@@ -5,7 +5,7 @@ require 'project/omaha/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'project-omaha'
-  spec.version       = Project::Omaha::VERSION
+  spec.version       = 'v0.1.1'
   spec.authors       = ['Mobility Labs']
   spec.email         = ['sean@mobility-labs.com']
 
