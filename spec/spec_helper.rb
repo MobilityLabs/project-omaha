@@ -1,5 +1,4 @@
 require 'active_record'
-
 require 'logger'
 
 plugin_test_dir = File.dirname(__FILE__)

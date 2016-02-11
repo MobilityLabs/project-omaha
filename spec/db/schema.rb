@@ -18,6 +18,5 @@ ActiveRecord::Schema.define(version: 1) do
   end
 
   add_index :comments, :commentator_id
-  add_index :comments, :children_count
   add_index :comments, [:commentable_id, :commentable_type]
 end

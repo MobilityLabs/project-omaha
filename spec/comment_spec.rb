@@ -122,6 +122,10 @@ describe Comment do
 
   context 'when specifying a depth of 1 for comments' do
 
+    let!(:comment_limit_definition) {
+      Comment::MAX_DEPTH = 1
+    }
+
     let(:user) {
       User.create!
     }
@@ -130,17 +134,48 @@ describe Comment do
       Commentable.create!
     }
 
-    let(:comment) {
-      Comment.create!(body: 'Foo', commentable: commentable, commentator: user, children_count: 1)
+    let(:parent_comment) {
+      Comment.create!(body: 'Foo', commentable: commentable, commentator: user)
     }
 
-    before(:each) do
-      Comment.create!(body: 'Bar', commentable: commentable, commentator: user, parent: comment)
-      Comment.create!(body: 'Baz', commentable: commentable, commentator: user, parent: comment)
-    end
+    let(:child_comment) {
+      Comment.create!(body: 'Bar', commentable: commentable, commentator: user, parent_id: parent_comment.id)
+    }
 
-    it 'does not allow more than one child comment' do
-      expect(comment.children.size).to eq 1
+    let!(:grandchild_comment) {
+      Comment.create!(body: 'Baz', commentable: commentable, commentator: user, parent_id: child_comment.id)
+    }
+
+    it 'attaches the grandchild comment directly to the parent comment' do
+      expect(grandchild_comment.parent_id).to eq parent_comment.id
+    end
+  end
+
+
+  context 'when using the default depth for comments' do
+
+    let(:user) {
+      User.create!
+    }
+
+    let(:commentable) {
+      Commentable.create!
+    }
+
+    let(:parent_comment) {
+      Comment.create!(body: 'Foo', commentable: commentable, commentator: user)
+    }
+
+    let(:child_comment) {
+      Comment.create!(body: 'Bar', commentable: commentable, commentator: user, parent_id: parent_comment.id)
+    }
+
+    let!(:grandchild_comment) {
+      Comment.create!(body: 'Baz', commentable: commentable, commentator: user, parent_id: child_comment.id)
+    }
+
+    it 'attaches the grandchild comment to the child comment' do
+      expect(grandchild_comment.parent_id).to eq child_comment.id
     end
   end
 end
