@@ -7,10 +7,31 @@ class Comment < ActiveRecord::Base
   belongs_to :commentator, polymorphic: true
 
   # Maximum depth can set how many children comments are permitted.
-  # Defaults to "unbound".
   MAX_DEPTH = -1
 
   after_save :bind_to_nth_parent
+
+  class << self
+    def build_from(commentable, commentator, comment_body)
+      new \
+      commentable: commentable,
+      body: comment_body,
+      commentator: commentator
+    end
+
+    def build_from_as_child_of(commentable, commentator, comment_body, parent_comment_id)
+      new \
+      commentable: commentable,
+      body:  comment_body,
+      commentator: commentator,
+      parent_id: parent_comment_id
+    end
+
+
+    def find_commentable(commentable_str, commentable_id)
+      commentable_str.constantize.find(commentable_id)
+    end
+  end
 
   # Scope to find all comments assigned to all commentable types for a given user.
   scope :find_comments_by_commentator, lambda { |commentator|
@@ -23,32 +44,8 @@ class Comment < ActiveRecord::Base
         .order(created_at: :desc)
   }
 
-  # Helper class method that allows you to build a comment
-  # by passing a commentable object, a commentator, and comment text
-
-  def self.build_from(commentable, commentator, comment_body)
-    new \
-      commentable: commentable,
-      body: comment_body,
-      commentator: commentator
-  end
-
-  def self.build_as_child_of(commentable, commentator, comment_body, parent_comment_id)
-    new \
-      commentable: commentable,
-      body:  comment_body,
-      commentator: commentator,
-      parent_id: parent_comment_id
-  end
-
   def has_children?
     children.any?
-  end
-
-  # Helper class method to look up a commentable object
-  # given the commentable class name and id
-  def self.find_commentable(commentable_str, commentable_id)
-    commentable_str.constantize.find(commentable_id)
   end
 
   private
